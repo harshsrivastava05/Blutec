@@ -1,8 +1,199 @@
-import Link from 'next/link';
-import {notFound} from 'next/navigation';
-import {allPuppies} from '@/lib/puppies';
-import {PuppyGallery} from '@/components/puppy-gallery';
-import {EnquiryForm} from '@/components/enquiry-form';
-export function generateStaticParams(){return allPuppies.map(p=>({slug:p.slug}))}
-export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const p=allPuppies.find(x=>x.slug===slug);return {title:p?`${p.name===p.breed?p.breed:p.name+', '+p.breed} puppy | TeddyPups U.A.E.`:'Puppy not found | TeddyPups U.A.E.'}}
-export default async function PuppyPage({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const index=allPuppies.findIndex(p=>p.slug===slug);if(index<0)notFound();const p=allPuppies[index], list=p.status==='gone'?allPuppies.filter(x=>x.status==='gone'):allPuppies.filter(x=>x.status==='available'), pos=list.findIndex(x=>x.slug===slug),prev=list[(pos+list.length-1)%list.length],next=list[(pos+1)%list.length];const steps=p.origin==='local'?[['Explore our puppies','Browse the puppies and find the one who captures your heart.'],['Choose your puppy','Open their profile or get in touch to find out more.'],['Meet before you choose','Spend time bonding before making your decision.'],['Pick-up or delivery','Take your puppy home or arrange delivery within Dubai.']]:[['Reserve your puppy','Tell us which puppy has captured your heart.'],['Personalized consultation','We finalize details with you and share updates on your puppy’s journey.'],['Import and arrival','We manage health checks, travel arrangements, and documentation.'],['Welcome home','We help your new puppy settle in and ensure a smooth transition into your home.']];return <main id="main" className="profile"><div className="wrap"><p className="breadcrumb"><Link href={p.status==='gone'?'/gone-home':'/puppies'}>{p.status==='gone'?'Gone home':'Available puppies'}</Link> / {p.name}</p><div className="profile-grid"><div><p className="hand numbered"><b>1</b> hello, it&apos;s me</p><PuppyGallery puppy={p}/></div><div className="profile-side"><div className="profile-tag"><img src="/media/teddy-peek.svg" alt=""/><span className="status">{p.status==='gone'?'Gone home':'Available'}</span><h1>{p.name}</h1>{p.name!==p.breed&&<p className="profile-breed">{p.breed}</p>}<dl><div><dt>Breed</dt><dd>{p.breed}</dd></div><div><dt>Boy or girl</dt><dd>{p.sex}</dd></div>{p.status==='available'&&<div><dt>Age</dt><dd>{p.age}</dd></div>}<div><dt>Where</dt><dd>{p.origin==='local'?'In Dubai':'Imported for you'}</dd></div></dl>{p.status==='available'?<><a className="button primary" href={`https://wa.me/919898124987?text=${encodeURIComponent(`Hi, I would like to ask about ${p.name}.`)}`} target="_blank" rel="noreferrer">Ask about {p.name} on WhatsApp</a><a className="text-link" href="#enquire">Send an enquiry</a></>:<Link className="button primary" href="/puppies">See available puppies</Link>}</div><div className="comes"><p className="hand numbered"><b>2</b> what comes with {p.name}</p><h2>Every Teddy Pup comes</h2><ul><li>Vaccinated</li><li>Dewormed</li><li>Verified health certificate from licensed vets</li><li>Thoroughly checked before joining your family</li></ul></div></div></div><section className="home-steps"><p className="hand numbered"><b>3</b> the way home</p><h2>{p.origin==='local'?'Meet your puppy in Dubai':'Coming home from abroad'}</h2><div>{steps.map(([title,desc],i)=><article key={title}><span>0{i+1}</span><h3>{title}</h3><p>{desc}</p></article>)}</div></section>{p.status==='available'&&<section id="enquire" className="enquiry"><div><p className="hand">dear TeddyPups…</p><h2>Ask about {p.name}</h2><p>Leave your details and our team will get back to you promptly — or message us on WhatsApp for the quickest reply.</p></div><EnquiryForm puppy={p}/></section>}<nav className="profile-nav" aria-label="More puppies"><Link href={'/puppies/'+prev.slug}>← Previous pup <strong>{prev.name}</strong></Link><Link href={'/puppies/'+next.slug}>Next pup → <strong>{next.name}</strong></Link></nav></div></main>}
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { allPuppies } from "@/lib/puppies";
+import { PuppyGallery } from "@/components/puppy-gallery";
+import { EnquiryForm } from "@/components/enquiry-form";
+export function generateStaticParams() {
+  return allPuppies.map((p) => ({ slug: p.slug }));
+}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = allPuppies.find((x) => x.slug === slug);
+  return {
+    title: p
+      ? `${p.name === p.breed ? p.breed : p.name + ", " + p.breed} puppy | TeddyPups U.A.E.`
+      : "Puppy not found | TeddyPups U.A.E.",
+  };
+}
+export default async function PuppyPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const index = allPuppies.findIndex((p) => p.slug === slug);
+  if (index < 0) notFound();
+  const p = allPuppies[index],
+    list =
+      p.status === "gone"
+        ? allPuppies.filter((x) => x.status === "gone")
+        : allPuppies.filter((x) => x.status === "available"),
+    pos = list.findIndex((x) => x.slug === slug),
+    prev = list[(pos + list.length - 1) % list.length],
+    next = list[(pos + 1) % list.length];
+  const steps =
+    p.origin === "local"
+      ? [
+          [
+            "Explore our puppies",
+            "Browse the puppies and find the one who captures your heart.",
+          ],
+          [
+            "Choose your puppy",
+            "Open their profile or get in touch to find out more.",
+          ],
+          [
+            "Meet before you choose",
+            "Spend time bonding before making your decision.",
+          ],
+          [
+            "Pick-up or delivery",
+            "Take your puppy home or arrange delivery within Dubai.",
+          ],
+        ]
+      : [
+          [
+            "Reserve your puppy",
+            "Tell us which puppy has captured your heart.",
+          ],
+          [
+            "Personalized consultation",
+            "We finalize details with you and share updates on your puppy’s journey.",
+          ],
+          [
+            "Import and arrival",
+            "We manage health checks, travel arrangements, and documentation.",
+          ],
+          [
+            "Welcome home",
+            "We help your new puppy settle in and ensure a smooth transition into your home.",
+          ],
+        ];
+  return (
+    <main id="main" className="profile">
+      <div className="wrap">
+        <p className="breadcrumb">
+          <Link href={p.status === "gone" ? "/gone-home" : "/puppies"}>
+            {p.status === "gone" ? "Gone home" : "Available puppies"}
+          </Link>{" "}
+          / {p.name}
+        </p>
+        <div className="profile-grid">
+          <div>
+            <p className="hand numbered">
+              <b>1</b> hello, it&apos;s me
+            </p>
+            <PuppyGallery puppy={p} />
+          </div>
+          <div className="profile-side">
+            <div className="profile-tag">
+              <img src="/media/teddy-peek.svg" alt="" />
+              <span className="status">
+                {p.status === "gone" ? "Gone home" : "Available"}
+              </span>
+              <h1>{p.name}</h1>
+              {p.name !== p.breed && <p className="profile-breed">{p.breed}</p>}
+              <dl>
+                <div>
+                  <dt>Breed</dt>
+                  <dd>{p.breed}</dd>
+                </div>
+                <div>
+                  <dt>Boy or girl</dt>
+                  <dd>{p.sex}</dd>
+                </div>
+                {p.status === "available" && (
+                  <div>
+                    <dt>Age</dt>
+                    <dd>{p.age}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt>Where</dt>
+                  <dd>
+                    {p.origin === "local" ? "In Dubai" : "Imported for you"}
+                  </dd>
+                </div>
+              </dl>
+              {p.status === "available" ? (
+                <>
+                  <a
+                    className="button primary"
+                    href={`https://wa.me/919898124987?text=${encodeURIComponent(`Hi, I would like to ask about ${p.name}.`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Ask about {p.name} on WhatsApp
+                  </a>
+                  <a className="text-link" href="#enquire">
+                    Send an enquiry
+                  </a>
+                </>
+              ) : (
+                <Link className="button primary" href="/puppies">
+                  See available puppies
+                </Link>
+              )}
+            </div>
+            <div className="comes">
+              <p className="hand numbered">
+                <b>2</b> what comes with {p.name}
+              </p>
+              <h2>Every Teddy Pup comes</h2>
+              <ul>
+                <li>Vaccinated</li>
+                <li>Dewormed</li>
+                <li>Verified health certificate from licensed vets</li>
+                <li>Thoroughly checked before joining your family</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <section className="home-steps">
+          <p className="hand numbered">
+            <b>3</b> the way home
+          </p>
+          <h2>
+            {p.origin === "local"
+              ? "Meet your puppy in Dubai"
+              : "Coming home from abroad"}
+          </h2>
+          <div>
+            {steps.map(([title, desc], i) => (
+              <article key={title}>
+                <span>0{i + 1}</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        {p.status === "available" && (
+          <section id="enquire" className="enquiry">
+            <div>
+              <p className="hand">dear TeddyPups…</p>
+              <h2>Ask about {p.name}</h2>
+              <p>
+                Leave your details and our team will get back to you promptly —
+                or message us on WhatsApp for the quickest reply.
+              </p>
+            </div>
+            <EnquiryForm puppy={p} />
+          </section>
+        )}
+        <nav className="profile-nav" aria-label="More puppies">
+          <Link href={"/puppies/" + prev.slug}>
+            ← Previous pup <strong>{prev.name}</strong>
+          </Link>
+          <Link href={"/puppies/" + next.slug}>
+            Next pup → <strong>{next.name}</strong>
+          </Link>
+        </nav>
+      </div>
+    </main>
+  );
+}

@@ -1,7 +1,19 @@
-node_modules
-.next
-out
+# Dependencies and Next.js build output
+node_modules/
+.next/
+out/
+build/
 *.tsbuildinfo
-.env*
 
+# Local environment and deployment settings
+.env*
 !.env.example
+.vercel/
+
+# Logs, test output, and local system files
+*.log
+coverage/
+playwright-report/
+test-results/
+.DS_Store
+Thumbs.db

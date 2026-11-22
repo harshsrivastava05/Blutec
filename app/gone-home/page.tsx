@@ -1,5 +1,60 @@
-import Link from 'next/link';
-import {gone} from '@/lib/puppies';
-import {ArchiveMotion} from '@/components/archive-motion';
-export const metadata={title:'Gone home | TeddyPups U.A.E.'};
-export default function GoneHome(){return <main id="main" className="archive"><ArchiveMotion/><div className="wrap"><header className="archive-heading"><div><h1>Gone home <span aria-hidden="true">♡</span></h1><p className="archive-intro">Every puppy here has already joined a loving family. Looking for one just like them? Tell us — we&apos;ll help you find your match.</p><Link href="/puppies" className="button primary">See available puppies</Link></div><div className="ticket-booth" aria-hidden="true"><img src="/media/teddy-booth.svg" alt=""/><div className="booth-counter"><span>tickets home</span></div></div></header><div className="ticket-grid">{gone.map(p=><Link key={p.slug} href={'/puppies/'+p.slug} className="ticket"><div className="ticket-main"><img src={p.image} alt={p.name+' puppy'}/><div><span className="hand">one ticket home</span><h2>{p.name}</h2><p>{p.breed===p.name?'':p.breed+', '}{p.sex}</p><div className="ticket-route"><small>{p.origin==='local'?'DUBAI SHOWROOM':'TEDDYPUPS'}</small><span aria-hidden="true">·····➜</span><strong>HOME ♥</strong></div></div></div><span className="ticket-end"><span>ADMIT ONE</span></span></Link>)}</div></div></main>}
+import Link from "next/link";
+import { gone } from "@/lib/puppies";
+import { ArchiveMotion } from "@/components/archive-motion";
+export const metadata = { title: "Gone home | TeddyPups U.A.E." };
+export default function GoneHome() {
+  return (
+    <main id="main" className="archive">
+      <ArchiveMotion />
+      <div className="wrap">
+        <header className="archive-heading">
+          <div>
+            <h1>
+              Gone home <span aria-hidden="true">♡</span>
+            </h1>
+            <p className="archive-intro">
+              Every puppy here has already joined a loving family. Looking for
+              one just like them? Tell us — we&apos;ll help you find your match.
+            </p>
+            <Link href="/puppies" className="button primary">
+              See available puppies
+            </Link>
+          </div>
+          <div className="ticket-booth" aria-hidden="true">
+            <img src="/media/teddy-booth.svg" alt="" />
+            <div className="booth-counter">
+              <span>tickets home</span>
+            </div>
+          </div>
+        </header>
+        <div className="ticket-grid">
+          {gone.map((p) => (
+            <Link key={p.slug} href={"/puppies/" + p.slug} className="ticket">
+              <div className="ticket-main">
+                <img src={p.image} alt={p.name + " puppy"} />
+                <div>
+                  <span className="hand">one ticket home</span>
+                  <h2>{p.name}</h2>
+                  <p>
+                    {p.breed === p.name ? "" : p.breed + ", "}
+                    {p.sex}
+                  </p>
+                  <div className="ticket-route">
+                    <small>
+                      {p.origin === "local" ? "DUBAI SHOWROOM" : "TEDDYPUPS"}
+                    </small>
+                    <span aria-hidden="true">·····➜</span>
+                    <strong>HOME ♥</strong>
+                  </div>
+                </div>
+              </div>
+              <span className="ticket-end">
+                <span>ADMIT ONE</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}

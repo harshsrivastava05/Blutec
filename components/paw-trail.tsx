@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { pawPath } from '@/lib/paw';
+import { useEffect, useRef } from "react";
+import { pawPath } from "@/lib/paw";
 
 const spacing = 41;
 const lifespan = 1050;
@@ -12,9 +12,11 @@ export function PawTrail() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
+    const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    const pointer = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+    const pointer = matchMedia(
+      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
     const paw = new Path2D(pawPath);
     let prints: Print[] = [];
     let previous: { x: number; y: number } | undefined;
@@ -26,29 +28,29 @@ export function PawTrail() {
     function paint(now: number) {
       frame = 0;
       ctx!.clearRect(0, 0, canvas!.width / scale, canvas!.height / scale);
-      prints = prints.filter(print => now - print.born < lifespan);
-      ctx!.fillStyle = '#d17b3e';
-      ctx!.strokeStyle = '#73320e';
+      prints = prints.filter((print) => now - print.born < lifespan);
+      ctx!.fillStyle = "#d17b3e";
+      ctx!.strokeStyle = "#73320e";
       ctx!.lineWidth = 2.4;
-      ctx!.lineJoin = 'round';
+      ctx!.lineJoin = "round";
       for (const { x, y, angle, born } of prints) {
         const progress = Math.max(0, (now - born) / lifespan);
         ctx!.save();
         ctx!.translate(x, y);
         ctx!.rotate(angle);
-        ctx!.globalAlpha = .56 * (1 - progress) ** 1.1;
-        ctx!.scale(.35, .35);
+        ctx!.globalAlpha = 0.56 * (1 - progress) ** 1.1;
+        ctx!.scale(0.35, 0.35);
         ctx!.translate(-32, -32);
         ctx!.stroke(paw);
         ctx!.fill(paw);
         ctx!.restore();
       }
-      canvas!.toggleAttribute('data-drawing', prints.length > 0);
+      canvas!.toggleAttribute("data-drawing", prints.length > 0);
       if (prints.length) frame = requestAnimationFrame(paint);
     }
 
     function move(event: PointerEvent) {
-      if (!pointer.matches || event.pointerType !== 'mouse') {
+      if (!pointer.matches || event.pointerType !== "mouse") {
         previous = undefined;
         return;
       }
@@ -67,12 +69,16 @@ export function PawTrail() {
 
       const angle = Math.atan2(dy, dx);
       const now = performance.now();
-      for (let distance = spacing - traveled; distance <= length; distance += spacing) {
+      for (
+        let distance = spacing - traveled;
+        distance <= length;
+        distance += spacing
+      ) {
         const offset = sequence++ % 2 ? 9 : -9;
         prints.push({
-          x: start.x + dx * distance / length - Math.sin(angle) * offset,
-          y: start.y + dy * distance / length + Math.cos(angle) * offset,
-          angle: angle + Math.PI / 2 + offset * .018,
+          x: start.x + (dx * distance) / length - Math.sin(angle) * offset,
+          y: start.y + (dy * distance) / length + Math.cos(angle) * offset,
+          angle: angle + Math.PI / 2 + offset * 0.018,
           born: now,
         });
       }
@@ -90,7 +96,7 @@ export function PawTrail() {
       cancelAnimationFrame(frame);
       frame = 0;
       prints = [];
-      canvas!.removeAttribute('data-drawing');
+      canvas!.removeAttribute("data-drawing");
       resetPointer();
       scale = Math.min(devicePixelRatio || 1, 2);
       canvas!.width = pointer.matches ? Math.round(innerWidth * scale) : 1;
@@ -99,18 +105,21 @@ export function PawTrail() {
     }
 
     resize();
-    addEventListener('resize', resize);
-    addEventListener('pointermove', move, { passive: true });
-    document.documentElement.addEventListener('pointerleave', resetPointer);
-    addEventListener('blur', resetPointer);
-    pointer.addEventListener('change', resize);
+    addEventListener("resize", resize);
+    addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("pointerleave", resetPointer);
+    addEventListener("blur", resetPointer);
+    pointer.addEventListener("change", resize);
     return () => {
       cancelAnimationFrame(frame);
-      removeEventListener('resize', resize);
-      removeEventListener('pointermove', move);
-      document.documentElement.removeEventListener('pointerleave', resetPointer);
-      removeEventListener('blur', resetPointer);
-      pointer.removeEventListener('change', resize);
+      removeEventListener("resize", resize);
+      removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener(
+        "pointerleave",
+        resetPointer,
+      );
+      removeEventListener("blur", resetPointer);
+      pointer.removeEventListener("change", resize);
     };
   }, []);
 

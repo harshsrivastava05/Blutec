@@ -1,7 +1,52 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {validateEnquiry,sendEnquiry} from '../lib/enquiry.ts';
-const sample={name:'Alex Example',phone:'+971 50 123 4567',email:'alex@example.test',area:'Dubai',message:'Hello',puppyId:'maltipoo-max-male',website:''};
-test('validates required fields, phone, email and length',()=>{assert.equal(validateEnquiry(sample).ok,true);for(const values of [{...sample,name:'A'},{...sample,phone:'abc'}, {...sample,email:'bad'}, {...sample,message:'x'.repeat(2001)}, {...sample,name:123}])assert.equal(validateEnquiry(values).ok,false)});
-test('passes legitimate data to the provider and reports failure honestly',async()=>{let payload;const ok=await sendEnquiry(sample,{apiKey:'test',from:'from@example.test',to:'to@example.test'},async (url,init)=>{assert.equal(url,'https://api.resend.com/emails');payload=JSON.parse(init.body);return new Response('{}',{status:200})});assert.equal(ok,true);assert.equal(payload.reply_to,sample.email);assert.match(payload.text,/maltipoo-max-male/);assert.equal(await sendEnquiry(sample,{apiKey:'test',from:'x',to:'y'},async()=>new Response('{}',{status:500})),false)});
-test('accepts an empty optional email and preserves a filled honeypot for the route to drop',()=>{assert.equal(validateEnquiry({...sample,email:''}).ok,true);const result=validateEnquiry({...sample,website:'spam'});assert.equal(result.ok,true);assert.equal(result.data.website,'spam')});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { validateEnquiry, sendEnquiry } from "../lib/enquiry.ts";
+const sample = {
+  name: "Alex Example",
+  phone: "+971 50 123 4567",
+  email: "alex@example.test",
+  area: "Dubai",
+  message: "Hello",
+  puppyId: "maltipoo-max-male",
+  website: "",
+};
+test("validates required fields, phone, email and length", () => {
+  assert.equal(validateEnquiry(sample).ok, true);
+  for (const values of [
+    { ...sample, name: "A" },
+    { ...sample, phone: "abc" },
+    { ...sample, email: "bad" },
+    { ...sample, message: "x".repeat(2001) },
+    { ...sample, name: 123 },
+  ])
+    assert.equal(validateEnquiry(values).ok, false);
+});
+test("passes legitimate data to the provider and reports failure honestly", async () => {
+  let payload;
+  const ok = await sendEnquiry(
+    sample,
+    { apiKey: "test", from: "from@example.test", to: "to@example.test" },
+    async (url, init) => {
+      assert.equal(url, "https://api.resend.com/emails");
+      payload = JSON.parse(init.body);
+      return new Response("{}", { status: 200 });
+    },
+  );
+  assert.equal(ok, true);
+  assert.equal(payload.reply_to, sample.email);
+  assert.match(payload.text, /maltipoo-max-male/);
+  assert.equal(
+    await sendEnquiry(
+      sample,
+      { apiKey: "test", from: "x", to: "y" },
+      async () => new Response("{}", { status: 500 }),
+    ),
+    false,
+  );
+});
+test("accepts an empty optional email and preserves a filled honeypot for the route to drop", () => {
+  assert.equal(validateEnquiry({ ...sample, email: "" }).ok, true);
+  const result = validateEnquiry({ ...sample, website: "spam" });
+  assert.equal(result.ok, true);
+  assert.equal(result.data.website, "spam");
+});
