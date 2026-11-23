@@ -4,6 +4,8 @@ A responsive puppy discovery website inspired by [TeddyPups U.A.E.](https://pupp
 
 The site is built with Next.js App Router, React, TypeScript, and CSS. Its illustrated pages include scroll-driven scenes, a moving Teddy mascot, animated transitions, and reduced-motion support.
 
+**Live site:** [https://blutecc.vercel.app/](https://blutecc.vercel.app/)
+
 ## Getting started
 
 Install dependencies and start the development server:
